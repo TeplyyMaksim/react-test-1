@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Unstyled contacts</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+  </head>
+  <body>
+
+    <div id="content"></div>
+
+    <script type="text/babel">
+      var CONTACTS = [
+        {
+          id: 1,
+          name: 'Darth Vader',
+          phoneNumber: '+250966666666',
+          image: 'https://pbs.twimg.com/profile_images/460713786475687936/FbMNGUep_400x400.jpeg'
+        }, {
+          id: 2,
+          name: 'Princess Leia',
+          phoneNumber: '+250966344466',
+          image: 'http://images.techtimes.com/data/images/full/105279/princess-leia.jpg?w=600'
+        }, {
+          id: 3,
+          name: 'Luke Skywalker',
+          phoneNumber: '+250976654433',
+          image: 'https://s-media-cache-ak0.pinimg.com/564x/2f/b7/dc/2fb7dc3e5cb7b12b454aa1bfdf45573f.jpg'
+        }, {
+          id: 4,
+          name: 'Chewbacca',
+          phoneNumber: '+250456784935',
+          image: 'https://vignette4.wikia.nocookie.net/starwars/images/4/4f/Chewbacca-TFA.png/revision/latest/scale-to-width-down/499?cb=20160106141736'
+        }
+      ];
+
+      var HelloWorld = React.createClass({
+        render: function () {
+          return <h1>Hello, my name is {this.props.name} and I like to {this.props.action}</h1>;
+        }
+      });
+
+      var Contact = React.createClass({
+        render: function () {
+          return <li className="contact">
+            <img src={this.props.image} width="60px" height="60px" />
+            <div>{this.props.name}</div>
+            <div>{this.props.phoneNumber}</div>
+          </li>;
+        }
+      })
+
+      var ContactList = React.createClass({
+        getInitialState: function () {
+          return {
+            displayedContacts: CONTACTS
+          }
+        },
+
+        handleSearch: function (event) {
+          var searchQuery = event.target.value.toLowerCase();
+          var displayedContacts = CONTACTS.filter(function (el) {
+            var searchValue = el.name.toLowerCase();
+            return searchValue.indexOf(searchQuery) !== -1;
+          });
+
+          this.setState({
+            displayedContacts: displayedContacts
+          });
+        },
+
+        render: function() {
+          return <div>
+            <h2>Input search query</h2>
+            <input type="text" onChange={this.handleSearch}/>
+            <ul>
+              {
+                this.state.displayedContacts.map(function(contact) {
+                  return <Contact key={contact.id} name={contact.name} phoneNumber={contact.phoneNumber} image={contact.image} />
+                })
+              }
+            </ul>
+          </div>
+        }
+      })
+
+      ReactDOM.render(
+        <ContactList />,
+        document.getElementById("content")
+      );
+    </script>
+
+  </body>
+</html>

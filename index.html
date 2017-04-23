@@ -17,40 +17,71 @@
           id: 1,
           name: 'Darth Vader',
           phoneNumber: '+250966666666',
-          image: 'https://pbs.twimg.com/profile_images/460713786475687936/FbMNGUep_400x400.jpeg'
+          image: 'https://pbs.twimg.com/profile_images/460713786475687936/FbMNGUep_400x400.jpeg',
+          email: 'email1@gmail.com',
+          address: 'address1'
         }, {
           id: 2,
           name: 'Princess Leia',
           phoneNumber: '+250966344466',
-          image: 'http://images.techtimes.com/data/images/full/105279/princess-leia.jpg?w=600'
+          image: 'http://images.techtimes.com/data/images/full/105279/princess-leia.jpg?w=600',
+          email: 'email2@gmail.com',
+          address: 'address2'
         }, {
           id: 3,
           name: 'Luke Skywalker',
           phoneNumber: '+250976654433',
-          image: 'https://s-media-cache-ak0.pinimg.com/564x/2f/b7/dc/2fb7dc3e5cb7b12b454aa1bfdf45573f.jpg'
+          image: 'https://s-media-cache-ak0.pinimg.com/564x/2f/b7/dc/2fb7dc3e5cb7b12b454aa1bfdf45573f.jpg',
+          email: 'email3@gmail.com',
+          address: 'address3'
         }, {
           id: 4,
           name: 'Chewbacca',
           phoneNumber: '+250456784935',
-          image: 'https://vignette4.wikia.nocookie.net/starwars/images/4/4f/Chewbacca-TFA.png/revision/latest/scale-to-width-down/499?cb=20160106141736'
+          image: 'https://vignette4.wikia.nocookie.net/starwars/images/4/4f/Chewbacca-TFA.png/revision/latest/scale-to-width-down/499?cb=20160106141736',
+          email: 'email4@gmail.com',
+          address: 'address4'
         }
       ];
 
+      /* Task 1 (simple component) */
       var HelloWorld = React.createClass({
         render: function () {
-          return <h1>Hello, my name is {this.props.name} and I like to {this.props.action}</h1>;
+          return <h1>Hello, my name is {this.props.name} and I like to {this.props.action}!</h1>;
         }
       });
 
+      /* Task 2|5 (contact list) */
       var Contact = React.createClass({
+        getInitialState: function () {
+          return {
+            expanded: false
+          }
+        },
+
+        expandMore: function (event) {
+          var reversed = !this.state.expanded;
+
+          this.setState({
+            expanded: reversed
+          });
+        },
+
         render: function () {
-          return <li className="contact">
+          var expansion = this.state.expanded ?
+            <div>
+              <div>{this.props.email}</div>
+              <div>{this.props.address}</div>
+            </div> :
+            null;
+          return <li className="contact"  onClick={this.expandMore}>
             <img src={this.props.image} width="60px" height="60px" />
             <div>{this.props.name}</div>
             <div>{this.props.phoneNumber}</div>
+            {expansion}
           </li>;
         }
-      })
+      });
 
       var ContactList = React.createClass({
         getInitialState: function () {
@@ -73,21 +104,137 @@
 
         render: function() {
           return <div>
-            <h2>Input search query</h2>
-            <input type="text" onChange={this.handleSearch}/>
+            <input type="text" onChange={this.handleSearch} placeholder="Search"/>
             <ul>
               {
                 this.state.displayedContacts.map(function(contact) {
-                  return <Contact key={contact.id} name={contact.name} phoneNumber={contact.phoneNumber} image={contact.image} />
+                  return <Contact key={contact.id} name={contact.name} phoneNumber={contact.phoneNumber} image={contact.image} email={contact.email} address={contact.address} />
                 })
               }
             </ul>
           </div>
         }
-      })
+      });
+
+      /* Task 3 (article   component) */
+      var Article = React.createClass({
+        render: function () {
+          return <div>
+            <h3>{this.props.title}</h3>
+            <h4>Article by {this.props.author}</h4>
+            <p>
+              {this.props.content}
+            </p>
+          </div>;
+        }
+      });
+
+      /* Task 4 (dynamic 'Hello World') */
+      var HelloWorldReload = React.createClass({
+        getInitialState: function () {
+          return {
+            displayedName: 'stranger'
+          }
+        },
+        handleRename: function (event) {
+          var searchQuery = event.target.value || 'stranger';
+
+          this.setState({
+            displayedName: searchQuery
+          });
+        },
+        render: function() {
+          return <div>
+            <h3>Hello {this.state.displayedName}!</h3>
+            <input type="text" onChange={this.handleRename}/>
+          </div>
+        }
+      });
+
+      /* Task 5 (calculator) */
+      var Calculator = React.createClass({
+        getInitialState: function () {
+          return {
+            numberA: 0,
+            numberB: 0,
+            action: '+',
+            result: ''
+          };
+        },
+
+        handleChangeA: function (event) {
+          var numberA = event.target.value || 0;
+
+          this.setState({
+            numberA: parseInt(numberA),
+            result: ''
+          });
+        },
+        handleChangeB: function (event) {
+          var numberB = event.target.value || 0;
+
+          this.setState({
+            numberB: parseInt(numberB),
+            result: ''
+          });
+        },
+        handleChangeAction: function (event) {
+          this.setState({
+            action: event.target.value,
+            result: ''
+          });
+        },
+        makeCalculations: function (event) {
+          switch (this.state.action) {
+            case '+':
+              this.setState({
+                result: '= ' + (this.state.numberA + this.state.numberB)
+              });
+              break;
+            case '-':
+              this.setState({
+                result: '= ' + (this.state.numberA - this.state.numberB)
+              });
+              break;
+            default:
+              this.setState({
+                result: '= ' + (this.state.numberA * this.state.numberB)
+              });
+          }
+        },
+
+        render: function() {
+          return <div>
+            <input type="number" onChange={this.handleChangeA}/>
+            <select onChange={this.handleChangeAction}>
+              <option>+</option>
+              <option>-</option>
+              <option>*</option>
+            </select>
+            <input type="number" onChange={this.handleChangeB}/>&nbsp;
+            <span>{this.state.result}</span>
+            <div><button onClick={this.makeCalculations}>Calculate</button></div>
+          </div>
+        }
+      });
 
       ReactDOM.render(
-        <ContactList />,
+        <div>
+          <h2>Task1</h2>
+          <HelloWorld name="Maksim" action="learn React.js" />
+          <hr />
+          <h2>Task2|5</h2>
+          <ContactList />
+          <hr />
+          <h2>Task3</h2>
+          <Article title="About fishes" author="Maksim Teplyy" content="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
+          <hr />
+          <h2>Task4</h2>
+          <HelloWorldReload />
+          <hr />
+          <h2>Task6</h2>
+          <Calculator />
+        </div>,
         document.getElementById("content")
       );
     </script>
